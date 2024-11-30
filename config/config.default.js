@@ -21,15 +21,15 @@ module.exports = appInfo => {
     // 单数据库信息配置
     client: {
       // host
-      host: 'localhost',
+      host: '182.92.237.216',
       // 端口号
       port: '3306',
       // 用户名
-      user: 'root',
+      user: 'financialHelper',
       // 密码
       password: 'yizhou12',
       // 数据库名
-      database: 'financialHelper'
+      database: 'financialhelper'
     },
     // 是否加载到 app 上，默认开启
     app: true,

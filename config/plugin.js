@@ -7,5 +7,9 @@ module.exports = {
   mysql: {
     enable: true,
     package: 'egg-mysql',
+  },
+  schedule: {
+    enable: true,
+    package: 'egg-schedule',
   }
 };
