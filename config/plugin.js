@@ -11,5 +11,9 @@ module.exports = {
   schedule: {
     enable: true,
     package: 'egg-schedule',
+  },
+  swaggerdoc: {
+    enable: true,
+    package: 'egg-swagger-doc',
   }
 };

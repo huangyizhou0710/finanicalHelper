@@ -14,7 +14,7 @@ module.exports = appInfo => {
   config.keys = appInfo.name + '_1732865658106_502';
 
   // add your middleware config here
-  config.middleware = [];
+  config.middleware = ['timezone'];
 
   // 定义数据库
   config.mysql = {
@@ -35,6 +35,23 @@ module.exports = appInfo => {
     app: true,
     // 是否加载到 agent 上，默认关闭
     agent: false
+  };
+
+  // swaggerdoc 配置
+  config.swaggerdoc = {
+    dirScanner: './app/controller', // 扫描的 API 文件夹路径
+    apiInfo: {
+      title: 'FinancialHelper', // 自定义标题
+      description: 'API 文档', // API 描述
+      version: '1.0.0', // 版本号
+    },
+    schemes: ['http', 'https'], // 协议
+    consumes: ['application/json'],
+    produces: ['application/json'],
+    enableSecurity: false, // 是否开启安全验证
+    enable: true,
+    routerMap: true,
+    enableAll: true,
   };
 
   // add your user config here
