@@ -36,11 +36,11 @@ class FetchGoldPrice extends Subscription {
         return;
       }
 
-      // const existing = await this.app.mysql.get('gold_price', { uptime: goldData.uptime });
-      // if (existing) {
-      //   this.ctx.logger.info('数据已存在，跳过插入');
-      //   return;
-      // }
+      const existing = await this.app.mysql.get('gold_price', { uptime: goldData.uptime });
+      if (existing) {
+        this.ctx.logger.info('数据已存在，跳过插入');
+        return;
+      }
 
       // 准备插入数据库的数据
       const dataToInsert = {
@@ -67,12 +67,12 @@ class FetchGoldPrice extends Subscription {
       }
 
       // 检查gold_history_prices是否存在今天数据，若无，则插入
-      const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      const yesterday = moment.tz(new Date(new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString().split('T')[0]), 'Asia/Shanghai').format();
       const historyData = await this.app.mysql.get('gold_history_prices', { uptime: yesterday });
       if (!historyData) {
         const historyDataToInsert = {
-          uptime: moment.tz(new Date(yesterday), 'Asia/Shanghai').format(), // 格式化为xxxx-xx-xx
-          price: parseFloat(goldData.last_price),
+          uptime: yesterday, // 格式化为xxxx-xx-xx
+          price: parseFloat(goldData.yesy_price),
           modify_time: this.app.mysql.literals.now,
         };
         const historyResult = await this.app.mysql.insert('gold_history_prices', historyDataToInsert);
