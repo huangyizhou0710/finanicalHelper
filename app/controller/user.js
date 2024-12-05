@@ -70,6 +70,19 @@ class UserController extends Controller {
       }
     })
   }
+
+  /**
+   * @summary 登出
+   * @description 登出
+   * @router post /user/logout
+   */
+  async logout() {
+    const { ctx } = this;
+    ctx.session = null;
+    ctx.success({
+      message: '已退出登录'
+    })
+  }
 }
 
 module.exports = UserController;
