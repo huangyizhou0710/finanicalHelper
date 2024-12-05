@@ -13,13 +13,25 @@ class UserController extends Controller {
    */
   async create() {
     const { ctx } = this;
-    // 校验参数
-    // 组装参数
     const payload = ctx.request.body || {};
+    // 校验参数
+    const { username, password } = payload;
+    if(!username || !password) {
+      ctx.throw(500, '请输入账户密码')
+    }
+    const users = await ctx.service.user.findByUsername(username)
+    if(users) {
+      ctx.throw(500, '账号已存在，请登录')
+    }
+    // 组装参数
     // 调用 Service 进行业务处理
-    const res = await ctx.service.user.create(payload);
+    const success = await ctx.service.user.create(payload);
     // 设置响应内容和响应状态码
-    ctx.success(res);
+    if(success) {
+      ctx.success(users);
+    } else {
+      ctx.fail(500, '注册失败')
+    }
   }
 
   /**
@@ -30,16 +42,33 @@ class UserController extends Controller {
    */
   async login() {
     const { ctx, service } = this;
-    // 校验参数
-    // 组装参数
     const payload = ctx.request.body || {};
-    // 调用 Service 进行业务处理
-    const user = await service.user.login(payload);
-    if (user?.id) {
-      ctx.success(user); // Correct the variable to `user`
-    } else {
-      ctx.fail(500, '登录失败'); // Provide meaningful message
+    // 校验参数
+    const { username, password } = payload;
+    if(!username || !password) {
+      ctx.throw(500, '请输入账户密码')
     }
+    const users = await ctx.service.user.findByUsername(username)
+    if(!users) {
+      ctx.throw(500, '该账号不存在')
+    }
+    const isVaild = await ctx.service.user.verifyPassword(password, users.password)
+    if(!isVaild) {
+      ctx.throw(500, '密码不正确')
+    }
+    // 组装参数
+    // 调用 Service 进行业务处理
+    ctx.session.user = {
+      id: users.id,
+      username: users.username
+    }
+    ctx.success({
+      message: '登录成功',
+      user: {
+        id: users.id,
+        username: users.username
+      }
+    })
   }
 }
 

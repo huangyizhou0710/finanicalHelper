@@ -7,6 +7,7 @@
     "declarations": true
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "egg": "^3.17.5",
     "egg-mysql": "^4.0.0",
     "egg-schedule": "^4.0.1",

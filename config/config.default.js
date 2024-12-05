@@ -16,6 +16,15 @@ module.exports = appInfo => {
   // add your middleware config here
   config.middleware = ['timezone'];
 
+  // session
+  config.session = {
+    key: 'EGG_SESSION',
+    maxAge: 24 * 3600 * 1000, // 1 天
+    httpOnly: true,
+    encrypt: true,
+    renew: true, // 每次访问延长 session 的有效期
+  }
+
   // 定义数据库
   config.mysql = {
     // 单数据库信息配置
