@@ -43,7 +43,6 @@ class AssetController extends Controller {
    */
   async getUserAssets() {
     const userId = this.ctx.session.user.id;
-
     if (!userId) {
       this.ctx.throw(400, '缺少用户 ID');
     }
