@@ -8,4 +8,6 @@ module.exports = app => {
   router.post('/gold/price', controller.price.create);
   router.get('/gold/price/today', app.middleware.authenticate() ,controller.price.today);
   router.get('/gold/price/history', controller.price.history);
+  router.post('/asset/addOrUpdateAsset', app.middleware.authenticate(), controller.asset.addOrUpdateAsset);
+  router.get('/asset/getUserAssets', app.middleware.authenticate(), controller.asset.getUserAssets);
 };
