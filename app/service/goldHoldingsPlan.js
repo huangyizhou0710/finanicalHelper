@@ -77,7 +77,7 @@ class GoldHoldingsPlanService extends Service {
       await this.service.goldTransaction.addTransaction(
         plan.user_id,
         'sell',
-        plan.quantity,
+        -plan.quantity,
         sellPrice,
         sellTime
       );

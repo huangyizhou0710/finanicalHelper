@@ -13,4 +13,8 @@ module.exports = app => {
   router.get('/asset/getGoldAsset', app.middleware.authenticate(), controller.asset.getGoldAsset);
   router.post('/goldTransaction/addTransaction', app.middleware.authenticate(), controller.goldTransaction.addTransaction);
   router.get('/goldTransaction/getTransactions', app.middleware.authenticate(), controller.goldTransaction.getTransactions);
+  router.get('/goldHoldingsPlan/getPlans', app.middleware.authenticate(), controller.goldHoldingsPlan.getPlans);
+  router.post('/goldHoldingsPlan/addPlan', app.middleware.authenticate(), controller.goldHoldingsPlan.addPlan);
+  router.post('/goldHoldingsPlan//buyPlan', app.middleware.authenticate(), controller.goldHoldingsPlan.buyPlan);
+  router.post('/goldHoldingsPlan/sellPlan', app.middleware.authenticate(), controller.goldHoldingsPlan.sellPlan);
 };
