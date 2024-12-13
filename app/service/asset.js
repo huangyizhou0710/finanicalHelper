@@ -49,6 +49,54 @@ class AssetService extends Service {
       orders: [['updated_at', 'desc']],
     });
   }
+
+  async getGoldAsset(userId) {
+    const { ctx } = this;
+    // 获取当前金价
+    const goldPrice = await ctx.service.price.get();
+    const currentPrice = goldPrice?.price?.[0]?.last_price || 0;
+    if(currentPrice === 0) {
+      return { code: '1', message: '暂无金价信息' };
+    }
+    // 获取用户持仓
+    const userAsset = await this.app.mysql.get('user_assets', {
+      user_id: userId,
+      asset_type: 'gold',
+    });
+
+    if (!userAsset) {
+      return { code: '2', message: '暂无持仓信息' };
+    }
+    // 计算持仓价值
+    let holdingValue = 0;
+    holdingValue = userAsset.quantity * currentPrice;
+
+
+    // 获取用户的交易记录
+    const transactions = await this.app.mysql.select('gold_transactions', {
+      where: { user_id: userId },
+    });
+
+    // 初始化数据
+    let buyAmount = 0; // 买入总金额
+    let sellAmount = 0; // 卖出总金额
+
+    transactions.forEach(transaction => {
+      if (transaction.transaction_type === 'buy') {
+        buyAmount += transaction.total_price;
+      } else if (transaction.transaction_type === 'sell') {
+        sellAmount += transaction.total_price;
+      }
+    });
+
+    // 总盈利 = 卖出总金额 + 持仓价值 + (买入总金额-负数)
+    const totalProfit = sellAmount + holdingValue + buyAmount;
+
+    // 总收益率 = 总盈利 / 买入总金额 * 100
+    const totalYield = -buyAmount > 0 ? ((totalProfit / -buyAmount) * 100).toFixed(2) + '%' : '0.00%';
+
+    return { ...userAsset, unit_price: currentPrice, buyAmount, sellAmount, totalProfit, totalYield };
+  }
 }
 
 module.exports = AssetService;

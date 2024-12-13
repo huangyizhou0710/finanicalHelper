@@ -10,6 +10,7 @@ module.exports = app => {
   router.get('/gold/price/history', controller.price.history);
   router.post('/asset/addOrUpdateAsset', app.middleware.authenticate(), controller.asset.addOrUpdateAsset);
   router.get('/asset/getUserAssets', app.middleware.authenticate(), controller.asset.getUserAssets);
+  router.get('/asset/getGoldAsset', app.middleware.authenticate(), controller.asset.getGoldAsset);
   router.post('/goldTransaction/addTransaction', app.middleware.authenticate(), controller.goldTransaction.addTransaction);
   router.get('/goldTransaction/getTransactions', app.middleware.authenticate(), controller.goldTransaction.getTransactions);
 };

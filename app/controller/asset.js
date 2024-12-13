@@ -50,6 +50,25 @@ class AssetController extends Controller {
     const assets = await this.service.asset.getUserAssets(userId);
     this.ctx.body = { assets };
   }
+
+  /**
+   * @summary 获取用户黄金资产
+   * @description 获取用户黄金资产
+   * @router get /asset/getGoldAsset
+   */
+  async getGoldAsset() {
+    const userId = this.ctx.session.user.id;
+    if (!userId) {
+      this.ctx.throw(400, '缺少用户 ID');
+    }
+
+    const goldAsset = await this.service.asset.getGoldAsset(userId);
+    if (goldAsset.code === '1' || goldAsset.code === '2') {
+      this.ctx.throw(500, goldAsset.message);
+    } else {
+      this.ctx.success(goldAsset);
+    }
+  }
 }
 
 module.exports = AssetController;
