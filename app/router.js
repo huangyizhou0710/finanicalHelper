@@ -17,4 +17,10 @@ module.exports = app => {
   router.post('/goldHoldingsPlan/addPlan', app.middleware.authenticate(), controller.goldHoldingsPlan.addPlan);
   router.post('/goldHoldingsPlan//buyPlan', app.middleware.authenticate(), controller.goldHoldingsPlan.buyPlan);
   router.post('/goldHoldingsPlan/sellPlan', app.middleware.authenticate(), controller.goldHoldingsPlan.sellPlan);
+  router.post('/user/login', controller.user.login);
+  router.post('/user/register', controller.user.create);
+  router.get('/user/logout', controller.user.logout);
+  router.get('/user/getUserInfo', app.middleware.authenticate(), controller.user.getUserInfo);
+  router.post('/user/updateUserConfig', app.middleware.authenticate(), controller.user.updateUserConfig);
+  router.post('/user/updatePassword', app.middleware.authenticate(), controller.user.updatePassword);
 };

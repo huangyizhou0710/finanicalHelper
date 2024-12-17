@@ -27,7 +27,21 @@ class UserService extends Service {
     return await bcrypt.compare(inputPassword, storePassword)
   }
 
- 
+  // 更新用户信息
+  async updateUserInfo(userId, userInfo) {
+    const { username, password, ...rest } = userInfo;
+    const changeInfo = {
+      id: userId,
+      ...rest,
+      updated_at: new Date(),
+    }
+    if(password) {
+      const hashPassword = await bcrypt.hash(password, 10)
+      changeInfo.password = hashPassword
+    }
+    const result = await this.app.mysql.update('users', changeInfo);
+    return result.affectedRows === 1;
+  }
 }
 
 module.exports = UserService;

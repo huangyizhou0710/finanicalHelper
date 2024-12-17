@@ -83,6 +83,81 @@ class UserController extends Controller {
       message: '已退出登录'
     })
   }
+
+  /**
+   * @summary 获取用户信息
+   * @description 获取用户信息
+   * @router get /user/getUserInfo
+   */
+  async getUserInfo() {
+    const { ctx } = this;
+    const user = ctx.session.user;
+    if(!user) {
+      ctx.throw(500, '请先登录')
+    }
+    ctx.success(user)
+  }
+
+  /**
+   * @summary 更新用户密码
+   * @description 更新用户密码
+   * @router post /user/updatePassword
+   * @request body updatePasswordRequest *body
+   */
+  async updatePassword() {
+    const { ctx } = this;
+    const payload = ctx.request.body || {};
+    const user = ctx.session.user;
+    const { oldPassword, newPassword } = payload;
+    if(!oldPassword || !newPassword) {
+      ctx.throw(500, '请输入原密码和新密码')
+    }
+    const users = await ctx.service.user.findByUsername(user.username)
+    const isVaild = await ctx.service.user.verifyPassword(oldPassword, users.password)
+    if(!isVaild) {
+      ctx.throw(500, '原密码不正确')
+    }
+    const success = await ctx.service.user.updateUserInfo(users.id, { password: newPassword });
+    if(success) {
+      ctx.success({ message: '密码修改成功' });
+    } else {
+      ctx.fail(500, '密码修改失败')
+    }
+  }
+
+  /**
+   * @summary 用户信息配置
+   * @description 用户信息配置
+   * @router post /user/updateUserConfig
+   * @request body updateUserConfigRequest *body
+   */
+  async updateUserConfig() {
+    const { ctx } = this;
+    const payload = ctx.request.body || {};
+    const {
+      pushGoldMinPrice,
+      pushGoldMaxPrice,
+      pushGoldTime,
+      goldExpectedChange,
+    } = payload
+    // 校验参数，所有字段中不能都为空
+    if(!pushGoldMinPrice && !pushGoldMaxPrice && !pushGoldTime && !goldExpectedChange) {
+      ctx.throw(500, '请输入配置信息')
+    }
+    const user = ctx.session.user;
+    const users = await ctx.service.user.findByUsername(user.username)
+    const success = await ctx.service.user.updateUserInfo(users.id, {
+      pushGoldMinPrice,
+      pushGoldMaxPrice,
+      pushGoldTime,
+      goldExpectedChange,
+    });
+    if(success) {
+      ctx.success({ message: '用户配置信息修改成功' });
+    } else {
+      ctx.fail(500, '用户配置信息修改失败')
+    }
+  }
 }
 
 module.exports = UserController;
